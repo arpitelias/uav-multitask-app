@@ -268,28 +268,38 @@ class ThreeTaskMTL(nn.Module):
 class SegModelStandalone(nn.Module):
     def __init__(self,num_classes=8):
         super().__init__()
-        backbone=models.resnet50(weights=None)
-        self.enc=nn.Sequential(
-            backbone.conv1,backbone.bn1,backbone.relu,backbone.maxpool,
-            backbone.layer1,backbone.layer2,backbone.layer3,backbone.layer4)
-        self.up1=nn.ConvTranspose2d(2048,512,2,stride=2)
-        self.c1=nn.Sequential(nn.Conv2d(512,512,3,padding=1),nn.ReLU(),nn.BatchNorm2d(512))
-        self.up2=nn.ConvTranspose2d(512,256,2,stride=2)
-        self.c2=nn.Sequential(nn.Conv2d(256,256,3,padding=1),nn.ReLU(),nn.BatchNorm2d(256))
-        self.up3=nn.ConvTranspose2d(256,128,2,stride=2)
-        self.c3=nn.Sequential(nn.Conv2d(128,128,3,padding=1),nn.ReLU(),nn.BatchNorm2d(128))
-        self.up4=nn.ConvTranspose2d(128,64,2,stride=2)
-        self.c4=nn.Sequential(nn.Conv2d(64,64,3,padding=1),nn.ReLU(),nn.BatchNorm2d(64))
-        self.up5=nn.ConvTranspose2d(64,32,2,stride=2)
-        self.seg_head=nn.Conv2d(32,num_classes,1)
+        self.encoder=models.resnet50(weights=None)
+        self.up1=nn.ConvTranspose2d(2048,512,kernel_size=2,stride=2)
+        self.conv1=nn.Sequential(nn.Conv2d(512,512,3,padding=1),nn.ReLU(),nn.BatchNorm2d(512))
+        self.up2=nn.ConvTranspose2d(512,256,kernel_size=2,stride=2)
+        self.conv2=nn.Sequential(nn.Conv2d(256,256,3,padding=1),nn.ReLU(),nn.BatchNorm2d(256))
+        self.up3=nn.ConvTranspose2d(256,128,kernel_size=2,stride=2)
+        self.conv3=nn.Sequential(nn.Conv2d(128,128,3,padding=1),nn.ReLU(),nn.BatchNorm2d(128))
+        self.up4=nn.ConvTranspose2d(128,64,kernel_size=2,stride=2)
+        self.conv4=nn.Sequential(nn.Conv2d(64,64,3,padding=1),nn.ReLU(),nn.BatchNorm2d(64))
+        self.up5=nn.ConvTranspose2d(64,32,kernel_size=2,stride=2)
+        self.final=nn.Conv2d(32,num_classes,1)
+
     def forward(self,x):
-        f=self.enc(x)
-        x=self.c1(self.up1(f))
-        x=self.c2(self.up2(x))
-        x=self.c3(self.up3(x))
-        x=self.c4(self.up4(x))
+        features=self.encoder.conv1(x)
+        features=self.encoder.bn1(features)
+        features=self.encoder.relu(features)
+        features=self.encoder.maxpool(features)
+        features=self.encoder.layer1(features)
+        features=self.encoder.layer2(features)
+        features=self.encoder.layer3(features)
+        features=self.encoder.layer4(features)
+        x=self.up1(features)
+        x=self.conv1(x)
+        x=self.up2(x)
+        x=self.conv2(x)
+        x=self.up3(x)
+        x=self.conv3(x)
+        x=self.up4(x)
+        x=self.conv4(x)
         x=self.up5(x)
-        return self.seg_head(x)
+        x=self.final(x)
+        return x
 
 
 HF_REPO='arpitjoshua/uav-multitask-models'
