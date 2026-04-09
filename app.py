@@ -36,7 +36,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-SEG_CLASSES = ['building','road','tree','low_veg','moving_car','static_car','human','clutter']
+SEG_CLASSES = ['low_veg','building','tree','road','static_car','moving_car','human','clutter']
 SEG_COLORS = np.array([
     [128,128,0],
     [128,0,0],
