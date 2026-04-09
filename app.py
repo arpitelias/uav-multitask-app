@@ -63,12 +63,12 @@ st.markdown("""
 
 SEG_CLASSES=['building','road','tree','low_veg','moving_car','static_car','human','clutter']
 SEG_COLORS=np.array([
-    [128,0,0],
-    [128,64,128],
-    [0,128,0],
     [128,128,0],
-    [64,0,128],
+    [128,0,0],
+    [0,128,0],
+    [128,64,128],
     [192,0,192],
+    [64,0,128],
     [64,64,0],
     [0,0,0]
 ],dtype=np.uint8)
