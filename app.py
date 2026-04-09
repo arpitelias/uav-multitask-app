@@ -18,8 +18,8 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-.main-header { font-size: 2.3rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.2rem; }
-.sub-header { font-size: 1rem; color: #555; margin-top: 0; margin-bottom: 1.5rem; }
+.main-header { font-size: 2.3rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.2rem; }
+.sub-header { font-size: 1rem; color: #888; margin-top: 0; margin-bottom: 1.5rem; }
 .metric-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 1rem; border-radius: 10px; color: white;
