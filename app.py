@@ -141,15 +141,15 @@ class MultiTaskModel(nn.Module):
 class CrossTaskAttention(nn.Module):
     def __init__(self, feature_dim=512, num_heads=4):
         super().__init__()
-        self.attn = nn.MultiheadAttention(feature_dim, num_heads, batch_first=True)
+        self.attention = nn.MultiheadAttention(embed_dim=feature_dim, num_heads=num_heads, batch_first=True)
         self.norm = nn.LayerNorm(feature_dim)
         self.proj = nn.Linear(feature_dim, feature_dim)
 
     def forward(self, query_feat, context_feat):
         b,c,h,w = query_feat.shape
         q = query_feat.flatten(2).permute(0,2,1)
-        k = context_feat.flatten(2).permute(0,2,1)
-        attended,_ = self.attn(q, k, k)
+        ctx = context_feat.flatten(2).permute(0,2,1)
+        attended,_ = self.attention(q, ctx, ctx)
         attended = self.norm(attended + q)
         attended = self.proj(attended)
         return attended.permute(0,2,1).reshape(b,c,h,w)
